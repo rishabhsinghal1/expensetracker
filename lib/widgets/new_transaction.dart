@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, unused_local_variable
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, avoid_unnecessary_containers, unused_local_variable, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -52,57 +52,65 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitData(),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: [
-                  Text(
-                    DateFormat.yMd().format(_selectedDate),
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    onPressed: _presentDatePicker,
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 10,
+            top: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: _titleController,
+                onSubmitted: (_) => _submitData(),
               ),
-            ),
-            ElevatedButton(
-              onPressed: _submitData,
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all<Color>(
-                  Colors.white,
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => _submitData(),
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Text(
+                      DateFormat.yMd().format(_selectedDate),
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      onPressed: _presentDatePicker,
+                      child: Text(
+                        'Choose Date',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Text('Add Transaction'),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: _submitData,
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white,
+                  ),
+                ),
+                child: Text('Add Transaction'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_equal_for_default_values, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, prefer_const_constructors_in_immutables
 //@dart=2.9
+
 import 'package:flutter/material.dart';
 import '/widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //   date: DateTime.now(),
     // ),
   ];
+  bool _showChart = false;
   List<Transaction> get _recentTransaction {
     return _userTransactions.where((tx) {
       return tx.date.isAfter(
@@ -111,23 +113,66 @@ class _MyHomePageState extends State<MyHomePage> {
   // ignore: non_constant_identifier_names
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandScape =
+        mediaQuery.orientation == Orientation.landscape;
+    final appBar = AppBar(
+      actions: [
+        IconButton(
+            onPressed: () => _startAddNewTransaction(context),
+            icon: Icon(Icons.add))
+      ],
+      title: Text('Personal Expenses'),
+    );
+    final txListWidget = SizedBox(
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () => _startAddNewTransaction(context),
-              icon: Icon(Icons.add))
-        ],
-        title: Text('Personal Expenses'),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // ignore: sized_box_for_whitespace
-            Chart(_recentTransaction),
-            TransactionList(_userTransactions, _deleteTransaction),
+            if (isLandScape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!isLandScape)
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.3,
+                child: Chart(_recentTransaction),
+              ),
+            if (!isLandScape) txListWidget,
+            if (isLandScape)
+              _showChart
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransaction),
+                    )
+                  : txListWidget,
           ],
         ),
       ),
